@@ -1,0 +1,26 @@
+name: Experiment CI - pytest core
+
+on:
+  push:
+    branches:
+      - edidada/main
+  workflow_dispatch:
+
+env:
+  ALLOW_PLOTTING: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install package with test dependency group
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e . --group test
+      # Core (non-plotting) subset of the upstream unit-test suite.
+      - name: Run core tests
+        run: pytest tests/core -q -n auto
